@@ -13,10 +13,12 @@ st.title('House Price Prediction in Tehran')
 # دریافت ورودی‌ها از کاربر
 area = st.number_input("Area", 0, 10000)
 
-room = st.radio(
+room = st.number_input(
     "Room :",
-    options=[0, 1],
-    format_func=lambda x: "Yes" if x == 1 else "No"
+    min_value=0,
+    max_value=100,
+    step=1,
+    format="%d"
 )
 parking = st.radio(
     "Parking :",
@@ -76,4 +78,5 @@ def predict():
 
 # دکمه پیش‌بینی
 trigger = st.button('Predict', on_click=predict)
+
 

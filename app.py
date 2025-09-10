@@ -8,22 +8,22 @@ import joblib
 # -----------------------------
 
 # لیست آدرس‌ها
-from utils import address_list  # مطمئن شو utils.address_list حاوی 192 آدرس است
+from utils import encode_address,address_list ,columns # مطمئن شو utils.address_list حاوی 192 آدرس است
 
 # بارگذاری مدل
 model = joblib.load('final_xgb_model.joblib')
 
 # ستون‌های ورودی مدل: ویژگی‌های عددی + dummy آدرس‌ها به ترتیب الفبایی
-columns = ["Area", "Room", "Parking", "Warehouse", "Elevator"] + sorted(address_list)
+columns = columns + sorted(address_list)
 
 st.title('House Price Prediction in Tehran')
 
 # -----------------------------
 # دریافت ورودی‌ها از کاربر
 # -----------------------------
-area = st.number_input("Area (متر مربع)", 0, 10000, step=1, format="%d")
+area = st.number_input("Area (m2)", 0, 10000, step=1, format="%d")
 
-room = st.number_input("Room (تعداد اتاق)", 0, 100, step=1, format="%d")
+room = st.number_input("Room (Number)", 0, 100, step=1, format="%d")
 
 parking = st.radio("Parking:", options=[0,1], format_func=lambda x: "Yes" if x==1 else "No")
 warehouse = st.radio("Warehouse:", options=[0,1], format_func=lambda x: "Yes" if x==1 else "No")
@@ -34,25 +34,12 @@ address = st.selectbox("Address:", address_list)
 # -----------------------------
 # تابع تبدیل آدرس به one-hot
 # -----------------------------
-def encode_address(address_value, columns):
-    """
-    ورودی:
-        address_value: آدرس انتخابی کاربر
-        columns: لیست ستون‌های ورودی مدل (بدون ستون Price)
-    خروجی:
-        دیکشنری {آدرس: مقدار} با 1 برای آدرس انتخابی و بقیه صفر
-    """
-    # فقط ستون‌های آدرس را پیدا کن و مرتب کن
-    address_cols = sorted([c for c in columns if c in address_list])
-    encoded = {col: 0 for col in address_cols}
-    if address_value in encoded:
-        encoded[address_value] = 1
-    return encoded
+
 
 # -----------------------------
 # تابع پیش‌بینی
 # -----------------------------
-def predict(): 
+def predict():
     # ویژگی‌های عددی/باینری
     row = {
         "Area": area,
@@ -78,9 +65,10 @@ def predict():
 
     # پیش‌بینی
     prediction = model.predict(X)
-    st.write("Predicted Price:", f"{prediction[0]:,.0f} ریال")
+    st.write("Predicted Price:", f"{prediction[0]:,.0f} Rials")
 
 # -----------------------------
 # دکمه پیش‌بینی
 # -----------------------------
-trigger = st.button('Predict', on_click=predict)
+if st.button("Predict"):
+    predict()

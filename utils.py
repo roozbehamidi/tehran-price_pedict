@@ -1,23 +1,23 @@
-
-
 # -----------------------------
 # تابع تبدیل آدرس به one-hot
 # -----------------------------
 def encode_address(address_value, columns):
     """
     ورودی:
-        address_value: آدرس انتخابی (string)
-        columns: لیست همه ستون‌های مدل
+        address_value: آدرس انتخابی کاربر
+        columns: لیست ستون‌های ورودی مدل (بدون ستون Price)
     خروجی:
-        دیکشنری که فقط ستون مربوط به آدرس انتخابی مقدار 1 دارد
+        دیکشنری {آدرس: مقدار} با 1 برای آدرس انتخابی و بقیه صفر
     """
-    encoded = {col: 0 for col in columns if col in address_list}
+    # فقط ستون‌های آدرس را پیدا کن و مرتب کن
+    address_cols = sorted([c for c in columns if c in address_list])
+    encoded = {col: 0 for col in address_cols}
     if address_value in encoded:
         encoded[address_value] = 1
     return encoded
 
 
-columns=["Area","Room","Parking","Warehouse","Elevator","Address"]
+columns=["Area", "Room", "Parking", "Warehouse", "Elevator"]
 
 address_list =['Shahran', 'Pardis', 'Shahrake Qods', 'Shahrake Gharb',
        'North Program Organization', 'Andisheh', 'West Ferdows Boulevard',
